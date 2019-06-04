@@ -10,7 +10,6 @@ install:
 
 script:
     - echo "skipping tests"
-
 before_deploy: |-
     # Generate image tags
     tag_build="v1.5"
