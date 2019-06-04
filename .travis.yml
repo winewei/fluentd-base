@@ -1,0 +1,35 @@
+if: branch =~ ^master
+language: bash
+group: stable
+dist: trusty
+os: linux
+services:
+- docker
+install:
+    - echo "skipping tests"
+
+script:
+    - echo "skipping tests"
+
+before_deploy: |-
+    # Generate image tags
+    tag_build="v1.5"
+    export LATEST="pristtlt/fluentd-quiet:latest"
+    export build_tag="pristtlt/fluentd-quiet:${tag_build}"
+
+    # Build docker image
+    docker build \
+    -t ${LATEST} \
+    -t ${build_tag} \
+    .
+
+deploy:
+- provider: script
+  script:  >-
+    docker login --username ${DOCKER_USER} --password ${DOCKER_PASSWORD}
+    && docker push ${LATEST}
+    && docker push ${build_tag}
+  skip_cleanup: true
+  on: 
+    branch:
+      - master
